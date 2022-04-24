@@ -10,7 +10,7 @@ namespace ViewModel.UniTaskData
 
         public IDisposable Subscribe(Action<T> action)
         {
-            return _subject.Subscribe(action);
+            return UniRx.ObservableExtensions.Subscribe(_subject, action);
         }
 
         public void SetValue(T value)
@@ -27,7 +27,7 @@ namespace ViewModel.UniTaskData
         private readonly ReactiveProperty<T> _reactiveProperty = new ReactiveProperty<T>();
         public IDisposable Subscribe(Action<T> action)
         {
-            return _reactiveProperty.Subscribe(action);
+            return UniRx.ObservableExtensions.Subscribe(_reactiveProperty, action);
         }
 
         public void SetValue(T value)
