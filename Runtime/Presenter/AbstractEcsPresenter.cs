@@ -2,6 +2,7 @@
 using ApplicationScripts.Ecs;
 using Leopotam.EcsLite;
 using Utilities.GenericPatterns;
+using ViewModel;
 
 namespace Game.CoreLogic
 {
@@ -22,7 +23,12 @@ namespace Game.CoreLogic
         {
             return Singletone<IPresenterResolver>.instance.Resolve(key);
         }
-        
+
+        protected IEcsPresenter Resolve(string key, out IViewModel viewModel)
+        {
+            return Singletone<IPresenterResolver>.instance.Resolve(key, out viewModel);
+        }
+
         public virtual void Initialize(EcsPresenterData ecsPresenterData)
         {
             EcsPresenterData = ecsPresenterData;

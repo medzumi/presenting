@@ -13,7 +13,6 @@ namespace EcsViewModelPresenting
         private EcsCollector _ecsCollector;
         private EcsPool<TComponent> _componentPool;
         private EcsPool<DisposableListComponent<IEcsPresenter<TComponent>>> _componentBindDataPool;
-        private EcsFilter _filter;
 
         public override void PreInit(EcsSystems systems)
         {
@@ -22,16 +21,10 @@ namespace EcsViewModelPresenting
                 .EndCollector(CollectorEvent.Added | CollectorEvent.Dirt);
             _componentPool = world.GetPool<TComponent>();
             _componentBindDataPool = world.GetPool<DisposableListComponent<IEcsPresenter<TComponent>>>();
-            _filter = world.Filter<DisposableListComponent<IEcsPresenter<TComponent>>>().Exc<TComponent>().End();
         }
 
         public override void Run(EcsSystems systems)
         {
-            foreach (var entity in _filter)
-            {
-                _componentBindDataPool.Del(entity);
-            }
-            
             foreach (var entity in _ecsCollector)
             {
                 var componentData = _componentPool.Get(entity);
