@@ -5,12 +5,12 @@ namespace Game.CoreLogic
 {
     [Serializable]
     public class LinkPresenter<TData> : AbstractEcsPresenter<LinkPresenter<TData>, TData>
-        where TData : ILinkableComponent
+        where TData : struct, ILinkableComponent
     {
         public List<string> _binders = new List<string>();
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
-        public override void Update(TData data)
+        protected override void Update(TData data)
         {
             base.Update(data);
             foreach (var disposable in _disposables)

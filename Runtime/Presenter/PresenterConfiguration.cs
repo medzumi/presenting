@@ -7,7 +7,7 @@ namespace ecslite.unityPresenting.Runtime.Presenter
     {
         public static void SetPresenterResolver(IPresenterResolver presenterResolver)
         {
-            Singletone<IPresenterResolver>.instance = presenterResolver;
+            
         }
     }
 }

@@ -9,7 +9,8 @@ namespace Game.CoreLogic
     }
     
     public interface IEcsPresenter<TData> : IDisposable, IEcsPresenter
+        where TData : struct
     {
-        public void Update(TData data);
+        public void Update(TData? data);
     }
 }

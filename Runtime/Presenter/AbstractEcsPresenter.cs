@@ -52,18 +52,45 @@ namespace Game.CoreLogic
     [Serializable]
     public abstract class AbstractEcsPresenter<TPresenter, TData> : AbstractEcsPresenter<TPresenter>, IEcsPresenter<TData>
         where TPresenter : AbstractEcsPresenter<TPresenter, TData>, new()
+        where TData : struct
     {
+        public string HasComponentKey;
+        
         protected EcsPool<DisposableListComponent<IEcsPresenter<TData>>> _presentersPool;
+        private IViewModelProperty<bool> _hasComponentProperty;
 
         public override void Initialize(EcsPresenterData ecsPresenterData)
         {
             base.Initialize(ecsPresenterData);
             _presentersPool = ecsPresenterData.ModelWorld.GetPool<DisposableListComponent<IEcsPresenter<TData>>>();
             _presentersPool.EnsureGet(ecsPresenterData.ModelEntity).List.Add(this);
+            _hasComponentProperty =
+                ecsPresenterData.ViewModel.GetViewModelData<IViewModelProperty<bool>>(HasComponentKey);
         }
 
-        public virtual void Update(TData data)
+        public void Update(TData? data)
         {
+            if (data.HasValue)
+            {
+                if (_hasComponentProperty?.GetValue() == false)
+                {
+                    _hasComponentProperty.SetValue(true);
+                }
+                
+                Update(data.Value);
+            }
+            else
+            {
+                if (_hasComponentProperty?.GetValue() == true)
+                {
+                    _hasComponentProperty.SetValue(false);
+                }
+            }
+        }
+
+        protected virtual void Update(TData data)
+        {
+            
         }
 
         protected override void DisposeHandler()
