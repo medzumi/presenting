@@ -18,7 +18,7 @@ public class PresenterSettingsProvider
 
         public PresentSettingsProvider(string path, SettingsScope scopes, IEnumerable<string> keywords = null) : base(path, scopes, keywords)
         {
-            _editor = UnityEditor.Editor.CreateEditor(PresenterSettings.instance);
+            //_editor = UnityEditor.Editor.CreateEditor(PresenterSettings.instance);
         }
 
         public override void OnGUI(string searchContext)
