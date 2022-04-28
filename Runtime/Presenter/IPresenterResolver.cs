@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using ViewModel;
 
 namespace Game.CoreLogic
@@ -10,8 +11,17 @@ namespace Game.CoreLogic
         public IEcsPresenter Resolve(string key, out IViewModel viewModel);
     }
 
-    public abstract class AbstractEcsConfig : ScriptableObject
+    public abstract class AbstractEcsConfigs : ScriptableObject
     {
-        
+        public abstract List<IEcsPresenterConfig> GetEcsPresenterConfigs();
+    }
+
+    public interface IEcsPresenterConfig
+    {
+        string GetKey();
+
+        List<IEcsPresenter> GetEcsPresenters();
+
+        string GetViewModelKey();
     }
 }
