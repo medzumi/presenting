@@ -83,7 +83,7 @@ namespace ViewModel
         private object GetViewModelDataHandler(string key)
         {
             var pair = _customPairs.FirstOrDefault(pair => string.Equals(key, pair.Key));
-            return pair.Data;
+            return pair?.Data;
         }
     }
 }

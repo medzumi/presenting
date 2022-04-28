@@ -17,5 +17,10 @@ namespace Unity
                 throw new System.NotImplementedException();
             }
         }
+
+        public override IPresenterResolver ProvideResolver()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

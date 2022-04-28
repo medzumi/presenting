@@ -1,4 +1,5 @@
-﻿using ViewModel;
+﻿using UnityEngine;
+using ViewModel;
 
 namespace Game.CoreLogic
 {
@@ -7,5 +8,10 @@ namespace Game.CoreLogic
         public IEcsPresenter Resolve(string key);
 
         public IEcsPresenter Resolve(string key, out IViewModel viewModel);
+    }
+
+    public abstract class AbstractEcsConfig : ScriptableObject
+    {
+        
     }
 }

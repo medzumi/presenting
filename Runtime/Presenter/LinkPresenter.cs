@@ -24,7 +24,7 @@ namespace Game.CoreLogic
                 var presenter = Resolve(_binders[index]);
                 presenter.Initialize(new EcsPresenterData()
                 {
-                    ModelEntity = EcsPresenterData.ModelEntity,
+                    ModelEntity = entity,
                     ModelWorld = EcsPresenterData.ModelWorld,
                     ViewModel = EcsPresenterData.ViewModel
                 });

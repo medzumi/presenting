@@ -14,6 +14,11 @@ namespace EcsViewModelPresenting
         private EcsPool<TComponent> _componentPool;
         private EcsPool<DisposableListComponent<IEcsPresenter<TComponent>>> _componentBindDataPool;
 
+        public ViewModelUpdateSystem() : base()
+        {
+            
+        }
+
         public override void PreInit(EcsSystems systems)
         {
             var world = systems.GetWorld();
