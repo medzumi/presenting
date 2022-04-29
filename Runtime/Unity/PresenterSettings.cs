@@ -1,11 +1,12 @@
 ﻿using Game.CoreLogic;
+using Packages.Utilities.Unity.Runtime.ScriptableSingletone;
 //using Packages.Utilities.Unity.Runtime.ScriptableSingletone;
 using UnityEngine;
 using Utilities.GenericPatterns;
 
 namespace Unity
 {
-    public class PresenterSettings //: RuntimeScriptableSingletone<PresenterSettings>
+    public class PresenterSettings : RuntimeScriptableSingletone<PresenterSettings>
     {
         public const string AssetPath = "Assets/ProjectSettings";
 
@@ -14,12 +15,14 @@ namespace Unity
         [RuntimeInitializeOnLoadMethod]
         private void Initialize()
         {
-            SingletoneProvider.InstanceProvider = _abstractResolverProvider.ProvideResolver();
+            SingletoneProvider<IPresenterResolver>.InstanceProvider = _abstractResolverProvider.ProvidePresenterResolver();
+            SingletoneProvider<IViewModelResolver>.InstanceProvider =
+                _abstractResolverProvider.ProvideViewModelResolver();
         }
         
-        private class SingletoneProvider : Singletone<IPresenterResolver>
+        private class SingletoneProvider<TProvide> : Singletone<TProvide>
         {
-            public static IPresenterResolver InstanceProvider
+            public static TProvide InstanceProvider
             {
                 get => instance;
                 set => instance = value;

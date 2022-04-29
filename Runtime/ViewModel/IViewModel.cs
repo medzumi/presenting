@@ -8,8 +8,6 @@ namespace ViewModel
     {
         T GetViewModelData<T>(string propertyName) where T : IViewModelData;
 
-        object GetViewModelData(string propertyName);
-
         T AddTo<T>(T disposable) where T : IDisposable;
     }
 }

@@ -21,7 +21,7 @@ namespace Game.CoreLogic
             int index = 0;
             foreach (var entity in data.GetLinks())
             {
-                var presenter = Resolve(_binders[index]);
+                var presenter = ResolvePresenter(_binders[index]);
                 presenter.Initialize(new EcsPresenterData()
                 {
                     ModelEntity = entity,

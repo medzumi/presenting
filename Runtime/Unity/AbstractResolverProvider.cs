@@ -5,6 +5,8 @@ namespace Unity
 {
     public abstract class AbstractResolverProvider : ScriptableObject
     {
-        public abstract IPresenterResolver ProvideResolver();
+        public abstract IPresenterResolver ProvidePresenterResolver();
+
+        public abstract IViewModelResolver ProvideViewModelResolver();
     }
 }

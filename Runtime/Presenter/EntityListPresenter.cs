@@ -33,7 +33,7 @@ namespace Presenter
 
         private void FillAction(int arg1, IViewModel arg2)
         {
-            Resolve(ListElementPresenterKey)
+            ResolvePresenter(ListElementPresenterKey)
                 .Initialize(new EcsPresenterData()
                 {
                     ModelWorld = EcsPresenterData.ModelWorld,

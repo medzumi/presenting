@@ -9,6 +9,7 @@ namespace Presenter
     {
         public string OpenCommandKey;
         public string PresenterKey;
+        public string ViewModelKey;
 
         private IViewModelEvent<NullData> NullEvent;
         private Action<NullData> _action;
@@ -20,7 +21,8 @@ namespace Presenter
 
         private void OpenPresenterMethod(NullData obj)
         {
-            var presenter = Resolve(PresenterKey, out var viewModel);
+            var presenter = ResolvePresenter(PresenterKey);
+            var viewModel = ResolveViewModel(ViewModelKey);
             presenter.Initialize(new EcsPresenterData()
             {
                 ModelEntity = EcsPresenterData.ModelEntity,

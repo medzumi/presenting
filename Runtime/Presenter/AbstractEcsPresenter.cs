@@ -19,14 +19,14 @@ namespace Game.CoreLogic
         }
         protected EcsPool<DisposableListComponent<IDisposable>> DisposeComponentPool { get; private set; }
 
-        protected IEcsPresenter Resolve(string key)
+        protected IEcsPresenter ResolvePresenter(string key)
         {
             return Singletone<IPresenterResolver>.instance.Resolve(key);
         }
 
-        protected IEcsPresenter Resolve(string key, out IViewModel viewModel)
+        protected IViewModel ResolveViewModel(string key)
         {
-            return Singletone<IPresenterResolver>.instance.Resolve(key, out viewModel);
+            return Singletone<IViewModelResolver>.instance.Resolve(key);
         }
 
         public virtual void Initialize(EcsPresenterData ecsPresenterData)
