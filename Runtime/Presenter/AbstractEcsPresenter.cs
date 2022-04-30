@@ -10,6 +10,9 @@ namespace Game.CoreLogic
     public abstract class AbstractEcsPresenter<TPresenter> : PoolableObject<TPresenter>, IEcsPresenter
         where TPresenter : AbstractEcsPresenter<TPresenter>, new()
     {
+        public IViewModelResolver ViewModelResolver;
+        public IPresenterResolver PresenterResolver;
+         
         private EcsPresenterData _ecsPresenterData;
 
         protected EcsPresenterData EcsPresenterData
@@ -18,16 +21,6 @@ namespace Game.CoreLogic
             private set => _ecsPresenterData = value;
         }
         protected EcsPool<DisposableListComponent<IDisposable>> DisposeComponentPool { get; private set; }
-
-        protected IEcsPresenter ResolvePresenter(string key)
-        {
-            return Singletone<IPresenterResolver>.instance.Resolve(key);
-        }
-
-        protected IViewModel ResolveViewModel(string key)
-        {
-            return Singletone<IViewModelResolver>.instance.Resolve(key);
-        }
 
         public virtual void Initialize(EcsPresenterData ecsPresenterData)
         {
@@ -45,7 +38,10 @@ namespace Game.CoreLogic
 
         protected virtual TPresenter CloneHandler()
         {
-            return AbstractEcsPresenter<TPresenter>.Create();
+            var clone = AbstractEcsPresenter<TPresenter>.Create();
+            clone.PresenterResolver = PresenterResolver;
+            clone.ViewModelResolver = ViewModelResolver;
+            return clone;
         }
     }
     

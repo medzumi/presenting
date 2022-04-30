@@ -9,7 +9,6 @@ namespace Game.CoreLogic
     public class PresenterConfig : IEcsPresenterConfig
     {
         [SerializeField] private string _key;
-        [SerializeField] private string _viewModelKey;
 
         [SerializeReference] [SerializeTypes(typeof(IEcsPresenter))]
         private List<IEcsPresenter> _presenters;
@@ -22,11 +21,6 @@ namespace Game.CoreLogic
         public List<IEcsPresenter> GetEcsPresenters()
         {
             return _presenters;
-        }
-
-        public string GetViewModelKey()
-        {
-            return _viewModelKey;
         }
     }
 }

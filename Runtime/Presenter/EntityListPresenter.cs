@@ -1,6 +1,7 @@
 ﻿using System;
 using ecslite.extensions;
 using Game.CoreLogic;
+using Unity;
 using ViewModel;
 
 namespace Presenter
@@ -8,11 +9,12 @@ namespace Presenter
     public sealed class EntityListPresenter<TListComponent> : AbstractEcsPresenter<EntityListPresenter<TListComponent>, TListComponent> 
         where TListComponent : struct, IListComponent<int>
     {
-        public string ListElementPresenterKey;
+        [PresenterKeyProperty] public string ListElementPresenterKey;
         public string ListPropertyKey;
 
         private CollectionData _collectionData;
         private readonly Action<int, IViewModel> _action;
+        private IEcsPresenter _elementExamplePresenter;
 
         public EntityListPresenter() : base()
         {
@@ -23,6 +25,7 @@ namespace Presenter
         {
             base.Initialize(ecsPresenterData);
             _collectionData = ecsPresenterData.ViewModel.GetViewModelData<CollectionData>(ListPropertyKey);
+            _elementExamplePresenter = PresenterResolver.Resolve(ListElementPresenterKey);
         }
 
         protected override void Update(TListComponent data)
@@ -31,9 +34,27 @@ namespace Presenter
             _collectionData.Fill(data.GetList(), _action);
         }
 
+        protected override EntityListPresenter<TListComponent> CloneHandler()
+        {
+            var clone =  base.CloneHandler();
+            clone.ListElementPresenterKey = this.ListElementPresenterKey;
+            clone.ListPropertyKey = this.ListPropertyKey;
+
+            return clone;
+        }
+
+        protected override void DisposeHandler()
+        {
+            base.DisposeHandler();
+            _elementExamplePresenter.Dispose();
+            ListElementPresenterKey = string.Empty;
+            ListPropertyKey = string.Empty;
+        }
+
         private void FillAction(int arg1, IViewModel arg2)
         {
-            ResolvePresenter(ListElementPresenterKey)
+            _elementExamplePresenter
+                .Clone()
                 .Initialize(new EcsPresenterData()
                 {
                     ModelWorld = EcsPresenterData.ModelWorld,

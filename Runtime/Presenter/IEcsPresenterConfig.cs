@@ -7,7 +7,5 @@ namespace Game.CoreLogic
         string GetKey();
 
         List<IEcsPresenter> GetEcsPresenters();
-
-        string GetViewModelKey();
     }
 }

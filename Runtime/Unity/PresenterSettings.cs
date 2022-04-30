@@ -12,14 +12,9 @@ namespace Unity
 
         [SerializeField] private AbstractResolverProvider _abstractResolverProvider;
 
-        [RuntimeInitializeOnLoadMethod]
-        private void Initialize()
-        {
-            SingletoneProvider<IPresenterResolver>.InstanceProvider = _abstractResolverProvider.ProvidePresenterResolver();
-            SingletoneProvider<IViewModelResolver>.InstanceProvider =
-                _abstractResolverProvider.ProvideViewModelResolver();
-        }
-        
+        public IViewModelResolver ViewModelResolver => _abstractResolverProvider.ProvideViewModelResolver();
+        public IPresenterResolver PresenterResolver => _abstractResolverProvider.ProvidePresenterResolver();
+
         private class SingletoneProvider<TProvide> : Singletone<TProvide>
         {
             public static TProvide InstanceProvider

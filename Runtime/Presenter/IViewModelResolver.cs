@@ -5,7 +5,7 @@ namespace Game.CoreLogic
 {
     public interface IViewModelResolver
     {
-        public List<string> GetViewModelKeys(List<string> buffer = null);
+        public List<string> GetViewModelsKeys(List<string> buffer = null);
 
         public IViewModel Resolve(string key);
     }

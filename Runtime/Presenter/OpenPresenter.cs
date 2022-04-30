@@ -1,6 +1,7 @@
 ﻿using System;
 using Game.CoreLogic;
 using UniRx;
+using Unity;
 using ViewModel;
 
 namespace Presenter
@@ -8,8 +9,8 @@ namespace Presenter
     public class OpenPresenter : AbstractEcsPresenter<OpenPresenter>
     {
         public string OpenCommandKey;
-        public string PresenterKey;
-        public string ViewModelKey;
+        [PresenterKeyProperty] public string PresenterKey;
+        [MonoViewModelKeyProperty] public string ViewModelKey;
 
         private IViewModelEvent<NullData> NullEvent;
         private Action<NullData> _action;
@@ -21,8 +22,8 @@ namespace Presenter
 
         private void OpenPresenterMethod(NullData obj)
         {
-            var presenter = ResolvePresenter(PresenterKey);
-            var viewModel = ResolveViewModel(ViewModelKey);
+            var presenter = PresenterResolver.Resolve(PresenterKey);
+            var viewModel = ViewModelResolver.Resolve(ViewModelKey);
             presenter.Initialize(new EcsPresenterData()
             {
                 ModelEntity = EcsPresenterData.ModelEntity,
