@@ -6,6 +6,6 @@ namespace Game.CoreLogic
     {
         string GetKey();
 
-        List<IEcsPresenter> GetEcsPresenters();
+        IEcsPresenter GetPresenter();
     }
 }

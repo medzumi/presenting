@@ -11,16 +11,16 @@ namespace Game.CoreLogic
         [SerializeField] private string _key;
 
         [SerializeReference] [SerializeTypes(typeof(IEcsPresenter))]
-        private List<IEcsPresenter> _presenters;
+        private IEcsPresenter _presenter;
 
         public string GetKey()
         {
             return _key;
         }
 
-        public List<IEcsPresenter> GetEcsPresenters()
+        public IEcsPresenter GetPresenter()
         {
-            return _presenters;
+            return _presenter;
         }
     }
 }

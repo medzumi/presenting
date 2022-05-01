@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
+using Utilities.SerializeReferencing;
 
 namespace Game.CoreLogic
 {
     public sealed class AggregatePresenter : AbstractEcsPresenter<AggregatePresenter>
     {
-        private List<IEcsPresenter> _presenters;
+        [SerializeReference] [SerializeTypes(typeof(IEcsPresenter))]
+        private List<IEcsPresenter> _presenters = new List<IEcsPresenter>();
 
         public override void Initialize(EcsPresenterData ecsPresenterData)
         {

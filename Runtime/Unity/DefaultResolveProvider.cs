@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ApplicationScripts.CodeExtensions;
 using Game.CoreLogic;
@@ -16,8 +17,8 @@ namespace Unity
 
         private readonly Dictionary<string, IEcsPresenter> _ecsPresenters = new Dictionary<string, IEcsPresenter>();
 
-        private readonly Dictionary<string, (Transform, Pool<MonoViewModel>)> _monoViewModelPool =
-            new Dictionary<string, (Transform, Pool<MonoViewModel>)>();
+        private readonly Dictionary<string, IConcreteResolver> _monoViewModelPool =
+            new Dictionary<string, IConcreteResolver>();
 
         private readonly List<IEcsPresenter> _buffer = new List<IEcsPresenter>();
 
@@ -44,32 +45,21 @@ namespace Unity
 
         IViewModel IViewModelResolver.Resolve(string key)
         {
-            if (!_monoViewModelPool.TryGetValue(key, out var valueTuple))
+            return GetResolver(key).Resolve();
+        }
+
+
+        public IConcreteResolver GetResolver(string key)
+        {
+            if (!_monoViewModelPool.TryGetValue(key, out var concreteResolver))
             {
                 var exampleMonoViewModel = _monoViewModels.FirstOrDefault(model => string.Equals(model.name, key));
                 if (!exampleMonoViewModel)
                     return null;
-                var poolRoot = (new GameObject($"Pool of {key}")).transform;
-                _monoViewModelPool[key] = valueTuple = (poolRoot, new Pool<MonoViewModel>(0, () =>
-                {
-                    var instance = Instantiate(exampleMonoViewModel, poolRoot);
-                    instance.gameObject.SetActive(false);
-                    return instance;
-                }));
+                _monoViewModelPool[key] = concreteResolver = new ConcreteResolver(exampleMonoViewModel);
             }
 
-            MonoViewModel resultMonoViewModel = valueTuple.Item2.Get();
-            while (!resultMonoViewModel)
-            {
-                resultMonoViewModel = valueTuple.Item2.Get();
-            }
-
-            var disposer = MonoViewModelDisposer.Create();
-            disposer.Pool = valueTuple.Item2;
-            disposer.Root = valueTuple.Item1;
-            disposer.MonoViewModel = resultMonoViewModel;
-            resultMonoViewModel.AddTo(disposer);
-            return resultMonoViewModel;
+            return concreteResolver;
         }
 
         public List<string> GetPresentersKeys(List<string> buffer)
@@ -93,35 +83,63 @@ namespace Unity
             {
                 var config = _defaultPresenterConfig.GetEcsPresenterConfigs()
                     .FirstOrDefault(config => string.Equals(key, config.GetKey()));
-            
-                _buffer.Clear();
-                if (config != null)
-                {
-                    foreach (var ecsPresenter in config.GetEcsPresenters())
-                    {
-                        _buffer.Add(ecsPresenter.Clone());
-                    }
-                }
-
-                _ecsPresenters[key] = presenter = new AggregatePresenter(_buffer);
+                
+                _ecsPresenters[key] = presenter = config.GetPresenter();
             }
 
             return presenter.Clone();
+        }
+        
+        
+        private class ConcreteResolver : IConcreteResolver
+        {
+            private readonly Pool<MonoViewModel> _viewModelPool;
+            private Transform _rootTransform;
+
+            public ConcreteResolver(MonoViewModel monoViewModel)
+            {
+                _viewModelPool = new Pool<MonoViewModel>(0, () =>
+                {
+                    if (!_rootTransform)
+                    {
+                        _rootTransform = (new GameObject($"Root of {monoViewModel.name}")).transform;
+                    }
+
+                    var result = Instantiate(monoViewModel, _rootTransform);
+                    return result;
+                }, model =>
+                {
+                    var disposer = MonoViewModelDisposer.Create();
+                    disposer.Pool = _viewModelPool;
+                    disposer.MonoViewModel = model;
+                    model.AddTo(disposer);
+                }, model =>
+                {
+                    if (!_rootTransform)
+                    {
+                        _rootTransform = new GameObject($"Root of {monoViewModel.name}").transform;
+                    }
+                    model.gameObject.SetActive(false);
+                    model.transform.SetParent(_rootTransform);
+                });
+            }
+            
+            public IViewModel Resolve()
+            {
+                return _viewModelPool.Get();
+            }
         }
         
         private class MonoViewModelDisposer : PoolableObject<MonoViewModelDisposer>
         {
             public MonoViewModel MonoViewModel;
             public Pool<MonoViewModel> Pool;
-            public Transform Root;
 
             protected override void DisposeHandler()
             {
                 base.DisposeHandler();
                 if (MonoViewModel)
                 {
-                    MonoViewModel.gameObject.SetActive(false);
-                    MonoViewModel.transform.SetParent(Root);
                     Pool.Release(MonoViewModel);
                 }
 

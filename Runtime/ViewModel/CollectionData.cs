@@ -9,12 +9,12 @@ namespace ViewModel
     {
         public event Action OnUpdate;
         
-        private Action<int, IViewModel> _cocnreteFillAction;
+        private Func<int, IViewModel> _cocnreteFillAction;
         private ICollection _collectionReference = null;
 
         public int Count => _collectionReference != null ? _collectionReference.Count : 0;
 
-        public void Fill<TCollection, TData>(TCollection collection, Action<TData, IViewModel> fillAction, bool forceUpdate = false)
+        public void Fill<TCollection, TData>(TCollection collection, Func<TData, IViewModel> fillAction, bool forceUpdate = false)
             where TCollection : class, IList<TData>, ICollection
         {
             //ToDo Fix ForceUpdate
@@ -22,17 +22,14 @@ namespace ViewModel
             {
                 _collectionReference = collection;
                     //ToDo : if need present different compoents
-                _cocnreteFillAction = (i, model) =>
-                {
-                    fillAction?.Invoke(collection[i], model);
-                };
+                _cocnreteFillAction = (i) => fillAction?.Invoke(collection[i]);
                 OnUpdate?.Invoke();
             }
         }
 
-        public void FillViewModel(int id, IViewModel viewModel)
+        public IViewModel FillViewModel(int id)
         {
-            _cocnreteFillAction?.Invoke(id, viewModel);
+            return _cocnreteFillAction?.Invoke(id);
         }
     }
 }

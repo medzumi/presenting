@@ -14,14 +14,5 @@ namespace Unity
 
         public IViewModelResolver ViewModelResolver => _abstractResolverProvider.ProvideViewModelResolver();
         public IPresenterResolver PresenterResolver => _abstractResolverProvider.ProvidePresenterResolver();
-
-        private class SingletoneProvider<TProvide> : Singletone<TProvide>
-        {
-            public static TProvide InstanceProvider
-            {
-                get => instance;
-                set => instance = value;
-            }
-        }
     }
 }

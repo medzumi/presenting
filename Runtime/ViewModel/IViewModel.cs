@@ -9,5 +9,9 @@ namespace ViewModel
         T GetViewModelData<T>(string propertyName) where T : IViewModelData;
 
         T AddTo<T>(T disposable) where T : IDisposable;
+
+        void SetDataParent(IViewModel viewModel);
+
+        void SetChildViewModel(IViewModel viewModel, string key);
     }
 }

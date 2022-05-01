@@ -9,13 +9,30 @@ namespace ViewModel
     [DefaultExecutionOrder(-100)]
     public class MonoViewModel : MonoBehaviour, IViewModel
     {
+        public enum Direction
+        {
+            None,
+            From,
+            To
+        }
+        
         [Serializable]
         private class CustomPair
         {
             public string Key = string.Empty;
 
+            public Direction Direction;
+
             [SerializeReference] [SerializeTypes(typeof(IViewModelData))]
             public IViewModelData Data = null;
+        }
+        
+        [Serializable]
+        private class ViewModelPlace
+        {
+            public string Key = string.Empty;
+            public Transform Place;
+            public MonoViewModel ViewModel;
         }
 
         [SerializeField] private List<CustomPair> _customPairs = new List<CustomPair>();
@@ -49,6 +66,16 @@ namespace ViewModel
         {
             _disposables.Add(disposable);
             return disposable;
+        }
+
+        public void SetDataParent(IViewModel viewModel)
+        {
+            
+        }
+
+        public void SetChildViewModel(IViewModel viewModel, string key)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnDisable()

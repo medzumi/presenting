@@ -32,5 +32,18 @@ namespace Editor
                 return null;
             }
         }
+
+        public IConcreteResolver GetResolver(string key)
+        {
+            try
+            {
+                return _viewModelResolver.GetResolver(key);
+            }
+            catch(Exception e)
+            {
+                Debug.LogException(e);
+                return null;
+            }
+        }
     }
 }

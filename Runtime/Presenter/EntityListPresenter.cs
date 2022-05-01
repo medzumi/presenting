@@ -6,15 +6,23 @@ using ViewModel;
 
 namespace Presenter
 {
-    public sealed class EntityListPresenter<TListComponent> : AbstractEcsPresenter<EntityListPresenter<TListComponent>, TListComponent> 
+    public sealed class EntityListPresenter<TListComponent> : EntityListPresenter<EntityListPresenter<TListComponent>, TListComponent> 
         where TListComponent : struct, IListComponent<int>
     {
+    }
+    
+    public class EntityListPresenter<TPresenter, TListComponent> : AbstractEcsPresenter<TPresenter, TListComponent> 
+        where TListComponent : struct, IListComponent<int>
+        where TPresenter : EntityListPresenter<TPresenter, TListComponent>, new()
+    {
         [PresenterKeyProperty] public string ListElementPresenterKey;
+        [MonoViewModelKeyProperty] public string ListElementViewModelKey;
         public string ListPropertyKey;
 
         private CollectionData _collectionData;
-        private readonly Action<int, IViewModel> _action;
+        private readonly Func<int, IViewModel> _action;
         private IEcsPresenter _elementExamplePresenter;
+        private IConcreteResolver _concreteResolver;
 
         public EntityListPresenter() : base()
         {
@@ -26,6 +34,7 @@ namespace Presenter
             base.Initialize(ecsPresenterData);
             _collectionData = ecsPresenterData.ViewModel.GetViewModelData<CollectionData>(ListPropertyKey);
             _elementExamplePresenter = PresenterResolver.Resolve(ListElementPresenterKey);
+            _concreteResolver = ViewModelResolver.GetResolver(ListElementViewModelKey);
         }
 
         protected override void Update(TListComponent data)
@@ -34,7 +43,7 @@ namespace Presenter
             _collectionData.Fill(data.GetList(), _action);
         }
 
-        protected override EntityListPresenter<TListComponent> CloneHandler()
+        protected override TPresenter CloneHandler()
         {
             var clone =  base.CloneHandler();
             clone.ListElementPresenterKey = this.ListElementPresenterKey;
@@ -51,16 +60,19 @@ namespace Presenter
             ListPropertyKey = string.Empty;
         }
 
-        private void FillAction(int arg1, IViewModel arg2)
+        private IViewModel FillAction(int arg1)
         {
+            var viewModel = _concreteResolver.Resolve();
             _elementExamplePresenter
                 .Clone()
                 .Initialize(new EcsPresenterData()
                 {
                     ModelWorld = EcsPresenterData.ModelWorld,
                     ModelEntity = arg1,
-                    ViewModel = EcsPresenterData.ViewModel
+                    ViewModel = viewModel
                 });
+
+            return viewModel;
         }
     }
 }
