@@ -9,19 +9,10 @@ namespace ViewModel
     [DefaultExecutionOrder(-100)]
     public class MonoViewModel : MonoBehaviour, IViewModel
     {
-        public enum Direction
-        {
-            None,
-            From,
-            To
-        }
-        
         [Serializable]
         private class CustomPair
         {
             public string Key = string.Empty;
-
-            public Direction Direction;
 
             [SerializeReference] [SerializeTypes(typeof(IViewModelData))]
             public IViewModelData Data = null;
@@ -32,11 +23,14 @@ namespace ViewModel
         {
             public string Key = string.Empty;
             public Transform Place;
-            public MonoViewModel ViewModel;
+            public IViewModel ViewModel;
         }
 
         [SerializeField] private List<CustomPair> _customPairs = new List<CustomPair>();
+        [SerializeField] private List<ViewModelPlace> _viewModelPlaces = new List<ViewModelPlace>();
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
+
+        private bool _isDisposed = false;
 
 #if UNITY_EDITOR
         private Dictionary<int, IViewModelData> _viewModelDatas = new Dictionary<int, IViewModelData>();
@@ -68,18 +62,24 @@ namespace ViewModel
             return disposable;
         }
 
-        public void SetDataParent(IViewModel viewModel)
+        public void SetViewModel(IViewModel viewModel, string key = null)
         {
+            var place = _viewModelPlaces.Single(modelPlace => string.Equals(key, modelPlace.Key));
+            if (viewModel is MonoBehaviour monoBehaviour)
+            {
+                monoBehaviour.transform.SetParent(place.Place);
+            }
+
+            place.ViewModel = viewModel;
+        }
+
+        public void Dispose()
+        {
+            if(_isDisposed)
+                return;
+
+            _isDisposed = true;
             
-        }
-
-        public void SetChildViewModel(IViewModel viewModel, string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void OnDisable()
-        {
             foreach (var disposable in _disposables)
             {
                 disposable?.Dispose();
@@ -93,6 +93,21 @@ namespace ViewModel
                     viewModelProperty.Reset();
                 }
             }
+
+            foreach (var viewModelPlace in _viewModelPlaces)
+            {
+                viewModelPlace.ViewModel?.Dispose();
+            }
+        }
+
+        public void Reset()
+        {
+            _isDisposed = false;
+        }
+
+        private void OnDestroy()
+        {
+            Dispose();
         }
 
         private void AddViewModelDataHandler(string key, IViewModelData data)

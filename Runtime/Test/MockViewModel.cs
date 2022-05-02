@@ -32,5 +32,26 @@ namespace Editor
             _originViewModel.AddTo(disposable);
             return disposable;
         }
+
+        public void SetViewModel(IViewModel viewModel, string key)
+        {
+            try
+            {
+                if (viewModel is MockViewModel mockViewModel)
+                {
+                    viewModel = mockViewModel._originViewModel;
+                }
+                _originViewModel.SetViewModel(viewModel, key);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
+        public void Dispose()
+        {
+            _originViewModel?.Dispose();
+        }
     }
 }

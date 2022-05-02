@@ -109,6 +109,7 @@ namespace Unity
                     return result;
                 }, model =>
                 {
+                    model.Reset();
                     var disposer = MonoViewModelDisposer.Create();
                     disposer.Pool = _viewModelPool;
                     disposer.MonoViewModel = model;
