@@ -85,9 +85,16 @@ namespace Unity
                     .FirstOrDefault(config => string.Equals(key, config.GetKey()));
                 
                 _ecsPresenters[key] = presenter = config.GetPresenter();
+                Inject(presenter);
             }
 
             return presenter.Clone();
+        }
+
+        private void Inject(IEcsPresenter ecsPresenter)
+        {
+            ecsPresenter.SetPresenterResolver(this);
+            ecsPresenter.SetViewModelResolver(this);
         }
         
         

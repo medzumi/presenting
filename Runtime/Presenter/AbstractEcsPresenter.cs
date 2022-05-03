@@ -22,6 +22,16 @@ namespace Game.CoreLogic
         }
         protected EcsPool<DisposableListComponent<IDisposable>> DisposeComponentPool { get; private set; }
 
+        public void SetPresenterResolver(IPresenterResolver presenterResolver)
+        {
+            PresenterResolver = presenterResolver;
+        }
+
+        public void SetViewModelResolver(IViewModelResolver viewModelResolver)
+        {
+            ViewModelResolver = viewModelResolver;
+        }
+
         public virtual void Initialize(EcsPresenterData ecsPresenterData)
         {
             EcsPresenterData = ecsPresenterData;

@@ -55,6 +55,11 @@ namespace Editor
             {
                 var genericMenu = new GenericMenu();
                 _buffer.Clear();
+                genericMenu.AddItem(new GUIContent("Null"), false, () =>
+                {
+                    property.stringValue = "Null";
+                    property.serializedObject.ApplyModifiedProperties();
+                });
                 foreach (var variable in PresenterSettings.instance.PresenterResolver.GetPresentersKeys(_buffer))
                 {
                     genericMenu.AddItem(new GUIContent(variable), false, () =>

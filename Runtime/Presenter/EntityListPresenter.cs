@@ -51,7 +51,8 @@ namespace Presenter
             var clone =  base.CloneHandler();
             clone.ListElementPresenterKey = this.ListElementPresenterKey;
             clone.ListPropertyKey = this.ListPropertyKey;
-
+            clone.RootToListElementPresenterKey = this.RootToListElementPresenterKey;
+            clone.ListElementViewModelKey = this.ListElementViewModelKey;
             return clone;
         }
 
