@@ -5,7 +5,7 @@ using Leopotam.EcsLite;
 
 namespace Game.CoreLogic
 {
-    public interface IEcsPresenter<in TModel, in TView> : IDisposable, IClonable<IEcsPresenter<TModel, TView>>
+    public interface IEcsPresenter<in TModel, in TView> : IDisposable, IPresenter, IClonable<IEcsPresenter<TModel, TView>>
     {
         public void SetPresenterResolver(IPresenterResolver presenterResolver);
         public void SetViewModelResolver(IViewResolver viewResolver);

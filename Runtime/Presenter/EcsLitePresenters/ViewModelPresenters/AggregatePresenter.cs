@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Utilities.SerializeReferencing;
 using ViewModel;
@@ -8,14 +9,17 @@ namespace Game.CoreLogic
     public sealed class AggregatePresenter : AbstractEcsPresenter<AggregatePresenter, IViewModel>
     {
         [SerializeReference] [SerializeTypes(typeof(IEcsPresenter<EcsPresenterData, IViewModel>))]
-        private List<IEcsPresenter<EcsPresenterData, IViewModel>> _presenters = new List<IEcsPresenter<EcsPresenterData, IViewModel>>();
+        private List<IPresenter> _presenters = new List<IPresenter>();
 
         public override void Initialize(EcsPresenterData ecsPresenterData, IViewModel view)
         {
             base.Initialize(ecsPresenterData, view);
             foreach (var ecsPresenter in _presenters)
             {
-                ecsPresenter.Initialize(ecsPresenterData, view);
+                if (ecsPresenter is IEcsPresenter<EcsPresenterData, IViewModel> presenter)
+                {
+                    presenter.Initialize(ecsPresenterData, view);
+                }
             }
         }
 
@@ -33,7 +37,10 @@ namespace Game.CoreLogic
             base.DisposeHandler();
             foreach (var ecsPresenter in _presenters)
             {
-                ecsPresenter.Dispose();
+                if (ecsPresenter is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
             }
             _presenters.Clear();
         }
@@ -43,7 +50,10 @@ namespace Game.CoreLogic
             var clone = base.CloneHandler();
             foreach (var ecsPresenter in _presenters)
             {
-                clone._presenters.Add(ecsPresenter.Clone());
+                if (ecsPresenter is IEcsPresenter<EcsPresenterData, IViewModel> presenter)
+                {
+                    clone._presenters.Add(presenter.Clone());
+                }
             }
 
             return clone;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ApplicationScripts.CodeExtensions;
 using Game.CoreLogic;
+using Presenter;
 using UnityEngine;
 using Utilities.Pooling;
 using ViewModel;
@@ -12,9 +13,11 @@ namespace Unity
     [CreateAssetMenu]
     public class DefaultResolveProvider : AbstractResolverProvider, IPresenterResolver, IViewResolver
     {
+        [SerializeField] private List<ScriptablePresenterCollection> _presenterCollections;
+
         public override IPresenterResolver ProvidePresenterResolver()
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public override IViewResolver ProvideViewModelResolver()
@@ -60,6 +63,16 @@ namespace Unity
         public IConcreteResolver<TView> GetResolver<TView>(string key)
         {
             throw new NotImplementedException();
+        }
+
+        public List<PresenterData> ReadPresenterData(List<PresenterData> presenterData)
+        {
+            foreach (var scriptablePresenterCollection in _presenterCollections)
+            {
+                presenterData = scriptablePresenterCollection.ReadPresenterData(presenterData);
+            }
+
+            return presenterData;
         }
     }
 }

@@ -10,11 +10,21 @@ namespace Game.CoreLogic
     {
         [SerializeField] private string _key;
 
-        [SerializeReference] [SerializeTypes(typeof(IEcsPresenter<,>))] private object _presenter = null;
+        [SerializeReference] [SerializeTypes(typeof(IPresenter))] private IPresenter _presenter = null;
 
         public string GetKey()
         {
             return _key;
         }
+
+        public IPresenter GetPresenter()
+        {
+            return _presenter;
+        }
+    }
+
+    public interface IPresenter
+    {
+        
     }
 }

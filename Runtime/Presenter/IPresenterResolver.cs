@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Presenter;
 
 namespace Game.CoreLogic
 {
-    public interface IPresenterResolver
+    public interface IPresenterResolver : IPresenterCollection
     {
         public IEcsPresenter<TModel, TView> Resolve<TModel, TView>(string key);
         

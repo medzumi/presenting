@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Presenter;
 using Unity;
 using UnityEditor;
 using UnityEngine;
@@ -41,7 +42,7 @@ namespace Editor
     [CustomPropertyDrawer(typeof(PresenterKeyProperty))]
     public class PresenterKeyPropertyDrawer : PropertyDrawer
     {
-        private static List<string> _buffer = new List<string>();
+        private static List<PresenterData> _buffer = new List<PresenterData>();
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -51,6 +52,8 @@ namespace Editor
             }
 
             var attr = attribute as PresenterKeyProperty;
+            var modelType = attr.ModelType;
+            var viewType = attr.ViewType;
             var content = new GUIContent(property.stringValue);
             var otherRect = EditorGUI.PrefixLabel(position, label);
             if (EditorGUI.DropdownButton(otherRect, content, FocusType.Keyboard))
@@ -62,13 +65,16 @@ namespace Editor
                     property.stringValue = "Null";
                     property.serializedObject.ApplyModifiedProperties();
                 });
-                foreach (var variable in PresenterSettings.instance.PresenterResolver.GetPresentersKeys(_buffer, attr.ModelType, attr.ViewType))
+                foreach (var variable in PresenterSettings.instance.PresenterResolver.ReadPresenterData(_buffer))
                 {
-                    genericMenu.AddItem(new GUIContent(variable), false, () =>
+                    if (modelType.IsAssignableFrom(variable.ModelType) && viewType.IsAssignableFrom(variable.ViewType))
                     {
-                        property.stringValue = variable;
-                        property.serializedObject.ApplyModifiedProperties();
-                    });
+                        genericMenu.AddItem(new GUIContent(variable.Key), false, () =>
+                        {
+                            property.stringValue = variable.Key;
+                            property.serializedObject.ApplyModifiedProperties();
+                        });
+                    }
                 }
                 genericMenu.DropDown(position);
             }
