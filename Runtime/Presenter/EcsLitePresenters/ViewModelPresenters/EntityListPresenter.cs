@@ -11,33 +11,33 @@ namespace Presenter
     {
     }
     
-    public class EntityListPresenter<TPresenter, TListComponent> : AbstractEcsPresenter<TPresenter, TListComponent> 
+    public class EntityListPresenter<TPresenter, TListComponent> : AbstractEcsPresenter<TPresenter, IViewModel, TListComponent> 
         where TListComponent : struct, IListComponent<int>
         where TPresenter : EntityListPresenter<TPresenter, TListComponent>, new()
     {
-        [PresenterKeyProperty] public string ListElementPresenterKey;
-        [PresenterKeyProperty] public string RootToListElementPresenterKey;
-        [MonoViewModelKeyProperty] public string ListElementViewModelKey;
+        [PresenterKeyProperty(typeof(EcsPresenterData), typeof(IViewModel))] public string ListElementPresenterKey;
+        [PresenterKeyProperty(typeof(EcsPresenterData), typeof(IViewModel))] public string RootToListElementPresenterKey;
+        [ViewKeyProperty(typeof(IViewModel))] public string ListElementViewModelKey;
         public string ListPropertyKey;
 
         private CollectionData _collectionData;
         private readonly Func<int, IViewModel> _action;
-        private IEcsPresenter _elementExamplePresenter;
-        private IEcsPresenter _rootElementExamplePresenter;
-        private IConcreteResolver _concreteResolver;
+        private IEcsPresenter<EcsPresenterData, IViewModel> _elementExamplePresenter;
+        private IEcsPresenter<EcsPresenterData, IViewModel> _rootElementExamplePresenter;
+        private IConcreteResolver<IViewModel> _concreteResolver;
 
         public EntityListPresenter() : base()
         {
             _action = FillAction;
         }
 
-        public override void Initialize(EcsPresenterData ecsPresenterData)
+        public override void Initialize(EcsPresenterData ecsPresenterData, IViewModel viewModel)
         {
-            base.Initialize(ecsPresenterData);
-            _collectionData = ecsPresenterData.ViewModel.GetViewModelData<CollectionData>(ListPropertyKey);
-            _elementExamplePresenter = PresenterResolver.Resolve(ListElementPresenterKey);
-            _rootElementExamplePresenter = PresenterResolver.Resolve(RootToListElementPresenterKey);
-            _concreteResolver = ViewModelResolver.GetResolver(ListElementViewModelKey);
+            base.Initialize(ecsPresenterData, viewModel);
+            _collectionData = viewModel.GetViewModelData<CollectionData>(ListPropertyKey);
+            _elementExamplePresenter = PresenterResolver.Resolve<EcsPresenterData, IViewModel>(ListElementPresenterKey);
+            _rootElementExamplePresenter = PresenterResolver.Resolve<EcsPresenterData, IViewModel>(RootToListElementPresenterKey);
+            _concreteResolver = ViewResolver.GetResolver<IViewModel>(ListElementViewModelKey);
         }
 
         protected override void Update(TListComponent data)
@@ -79,8 +79,7 @@ namespace Presenter
                 {
                     ModelWorld = EcsPresenterData.ModelWorld,
                     ModelEntity = arg1,
-                    ViewModel = viewModel
-                });
+                }, viewModel);
 
             _rootElementExamplePresenter
                 .Clone()
@@ -88,8 +87,7 @@ namespace Presenter
                 {
                     ModelWorld = EcsPresenterData.ModelWorld,
                     ModelEntity = EcsPresenterData.ModelEntity,
-                    ViewModel = viewModel
-                });
+                }, viewModel);
             
             return viewModel;
         }

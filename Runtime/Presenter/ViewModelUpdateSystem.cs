@@ -12,7 +12,7 @@ namespace EcsViewModelPresenting
     {
         private EcsCollector _ecsCollector;
         private EcsPool<TComponent> _componentPool;
-        private EcsPool<DisposableListComponent<IEcsPresenter<TComponent>>> _componentBindDataPool;
+        private EcsPool<ListComponent<IUpdatable<TComponent>>> _componentBindDataPool;
 
         public ViewModelUpdateSystem() : base()
         {
@@ -22,10 +22,10 @@ namespace EcsViewModelPresenting
         public override void PreInit(EcsSystems systems)
         {
             var world = systems.GetWorld();
-            _ecsCollector = world.Filter<TComponent>().Inc<DisposableListComponent<IEcsPresenter<TComponent>>>()
+            _ecsCollector = world.Filter<TComponent>().Inc<ListComponent<IUpdatable<TComponent>>>()
                 .EndCollector(CollectorEvent.Added | CollectorEvent.Dirt);
             _componentPool = world.GetPool<TComponent>();
-            _componentBindDataPool = world.GetPool<DisposableListComponent<IEcsPresenter<TComponent>>>();
+            _componentBindDataPool = world.GetPool<ListComponent<IUpdatable<TComponent>>>();
         }
 
         public override void Run(EcsSystems systems)

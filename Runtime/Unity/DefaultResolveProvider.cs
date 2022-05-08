@@ -10,150 +10,56 @@ using ViewModel;
 namespace Unity
 {
     [CreateAssetMenu]
-    public class DefaultResolveProvider : AbstractResolverProvider, IPresenterResolver, IViewModelResolver
+    public class DefaultResolveProvider : AbstractResolverProvider, IPresenterResolver, IViewResolver
     {
-        [SerializeField] private DefaultPresenterConfig _defaultPresenterConfig;
-        [SerializeField] private List<MonoViewModel> _monoViewModels;
-
-        private readonly Dictionary<string, IEcsPresenter> _ecsPresenters = new Dictionary<string, IEcsPresenter>();
-
-        private readonly Dictionary<string, IConcreteResolver> _monoViewModelPool =
-            new Dictionary<string, IConcreteResolver>();
-
-        private readonly List<IEcsPresenter> _buffer = new List<IEcsPresenter>();
-
         public override IPresenterResolver ProvidePresenterResolver()
         {
-            return this;
+            throw new NotImplementedException();
         }
 
-        public override IViewModelResolver ProvideViewModelResolver()
+        public override IViewResolver ProvideViewModelResolver()
         {
-            return this;
+            throw new NotImplementedException();
+        }
+
+        public IEcsPresenter<TModel, TView> Resolve<TModel, TView>(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<string> GetPresentersKeys<TModel, TView>(List<string> buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<string> GetPresentersKeys(List<string> buffer, Type modelType, Type viewType)
+        {
+            throw new NotImplementedException();
         }
 
         public List<string> GetViewModelsKeys(List<string> buffer = null)
         {
-            if (buffer.IsNull())
-            {
-                buffer = new List<string>();
-            }
-
-            buffer.AddRange(_monoViewModels.Select(model => model.name));
-            return buffer;
+            throw new NotImplementedException();
         }
 
-        IViewModel IViewModelResolver.Resolve(string key)
+        public List<string> GetViewModelsKeys<TView>(List<string> buffer)
         {
-            return GetResolver(key).Resolve();
+            throw new NotImplementedException();
         }
 
-
-        public IConcreteResolver GetResolver(string key)
+        public List<string> GetViewModelsKeys(List<string> buffer, Type viewType)
         {
-            if (!_monoViewModelPool.TryGetValue(key, out var concreteResolver))
-            {
-                var exampleMonoViewModel = _monoViewModels.FirstOrDefault(model => string.Equals(model.name, key));
-                if (!exampleMonoViewModel)
-                    return null;
-                _monoViewModelPool[key] = concreteResolver = new ConcreteResolver(exampleMonoViewModel);
-            }
-
-            return concreteResolver;
+            throw new NotImplementedException();
         }
 
-        public List<string> GetPresentersKeys(List<string> buffer)
+        public TView Resolve<TView>(string key)
         {
-            if (buffer.IsNull())
-            {
-                buffer = new List<string>();
-            }
-
-            foreach (var ecsPresenterConfig in _defaultPresenterConfig.GetEcsPresenterConfigs())
-            {
-                buffer.Add(ecsPresenterConfig.GetKey());
-            }
-
-            return buffer;
+            throw new NotImplementedException();
         }
 
-        IEcsPresenter IPresenterResolver.Resolve(string key)
+        public IConcreteResolver<TView> GetResolver<TView>(string key)
         {
-            if (!_ecsPresenters.TryGetValue(key, out var presenter))
-            {
-                var config = _defaultPresenterConfig.GetEcsPresenterConfigs()
-                    .FirstOrDefault(config => string.Equals(key, config.GetKey()));
-                
-                _ecsPresenters[key] = presenter = config.GetPresenter();
-                Inject(presenter);
-            }
-
-            return presenter.Clone();
-        }
-
-        private void Inject(IEcsPresenter ecsPresenter)
-        {
-            ecsPresenter.SetPresenterResolver(this);
-            ecsPresenter.SetViewModelResolver(this);
-        }
-        
-        
-        private class ConcreteResolver : IConcreteResolver
-        {
-            private readonly Pool<MonoViewModel> _viewModelPool;
-            private Transform _rootTransform;
-
-            public ConcreteResolver(MonoViewModel monoViewModel)
-            {
-                _viewModelPool = new Pool<MonoViewModel>(0, () =>
-                {
-                    if (!_rootTransform)
-                    {
-                        _rootTransform = (new GameObject($"Root of {monoViewModel.name}")).transform;
-                    }
-
-                    var result = Instantiate(monoViewModel, _rootTransform);
-                    return result;
-                }, model =>
-                {
-                    model.Reset();
-                    var disposer = MonoViewModelDisposer.Create();
-                    disposer.Pool = _viewModelPool;
-                    disposer.MonoViewModel = model;
-                    model.AddTo(disposer);
-                }, model =>
-                {
-                    if (!_rootTransform)
-                    {
-                        _rootTransform = new GameObject($"Root of {monoViewModel.name}").transform;
-                    }
-                    model.gameObject.SetActive(false);
-                    model.transform.SetParent(_rootTransform);
-                });
-            }
-            
-            public IViewModel Resolve()
-            {
-                return _viewModelPool.Get();
-            }
-        }
-        
-        private class MonoViewModelDisposer : PoolableObject<MonoViewModelDisposer>
-        {
-            public MonoViewModel MonoViewModel;
-            public Pool<MonoViewModel> Pool;
-
-            protected override void DisposeHandler()
-            {
-                base.DisposeHandler();
-                if (MonoViewModel)
-                {
-                    Pool.Release(MonoViewModel);
-                }
-
-                MonoViewModel = null;
-                Pool = null;
-            }
+            throw new NotImplementedException();
         }
     }
 }

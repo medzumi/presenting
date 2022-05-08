@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Editor
 {
-    [CustomEditor(typeof(AbstractEcsConfigs), true)]
+    [CustomEditor(typeof(AbstractConfigs), true)]
     public class PresenterConfigEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
@@ -13,7 +13,7 @@ namespace Editor
             base.OnInspectorGUI();
             if (GUILayout.Button("Validate"))
             {
-                var config = target as AbstractEcsConfigs;
+                var config = target as AbstractConfigs;
                 Debug.LogError("Doesn't work");
             }
         }

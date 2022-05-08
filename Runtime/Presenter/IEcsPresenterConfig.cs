@@ -2,10 +2,10 @@
 
 namespace Game.CoreLogic
 {
-    public interface IEcsPresenterConfig
+    public interface IEcsPresenterConfig<TModel, TView>
     {
         string GetKey();
 
-        IEcsPresenter GetPresenter();
+        IEcsPresenter<TModel, TView> GetPresenter();
     }
 }

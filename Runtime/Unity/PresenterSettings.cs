@@ -12,7 +12,7 @@ namespace Unity
 
         [SerializeField] private AbstractResolverProvider _abstractResolverProvider;
 
-        public IViewModelResolver ViewModelResolver => _abstractResolverProvider.ProvideViewModelResolver();
+        public IViewResolver ViewResolver => _abstractResolverProvider.ProvideViewModelResolver();
         public IPresenterResolver PresenterResolver => _abstractResolverProvider.ProvidePresenterResolver();
     }
 }

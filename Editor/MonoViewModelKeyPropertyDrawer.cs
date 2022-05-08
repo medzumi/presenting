@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Editor
 {
-    [CustomPropertyDrawer(typeof(MonoViewModelKeyProperty))]
+    [CustomPropertyDrawer(typeof(ViewKeyProperty))]
     public class MonoViewModelKeyPropertyDrawer : PropertyDrawer
     {
         private static List<string> _buffer = new List<string>();
@@ -24,7 +24,8 @@ namespace Editor
             {
                 var genericMenu = new GenericMenu();
                 _buffer.Clear();
-                foreach (var variable in PresenterSettings.instance.ViewModelResolver.GetViewModelsKeys(_buffer))
+                var attr = attribute as ViewKeyProperty;
+                foreach (var variable in PresenterSettings.instance.ViewResolver.GetViewModelsKeys(_buffer, attr.ViewType))
                 {
                     genericMenu.AddItem(new GUIContent(variable), false, () =>
                     {
@@ -49,6 +50,7 @@ namespace Editor
                 throw new UnityException($"Not valid property type : {property.propertyType}. Required : {SerializedPropertyType.String}");
             }
 
+            var attr = attribute as PresenterKeyProperty;
             var content = new GUIContent(property.stringValue);
             var otherRect = EditorGUI.PrefixLabel(position, label);
             if (EditorGUI.DropdownButton(otherRect, content, FocusType.Keyboard))
@@ -60,7 +62,7 @@ namespace Editor
                     property.stringValue = "Null";
                     property.serializedObject.ApplyModifiedProperties();
                 });
-                foreach (var variable in PresenterSettings.instance.PresenterResolver.GetPresentersKeys(_buffer))
+                foreach (var variable in PresenterSettings.instance.PresenterResolver.GetPresentersKeys(_buffer, attr.ModelType, attr.ViewType))
                 {
                     genericMenu.AddItem(new GUIContent(variable), false, () =>
                     {

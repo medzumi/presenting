@@ -7,6 +7,6 @@ namespace Unity
     {
         public abstract IPresenterResolver ProvidePresenterResolver();
 
-        public abstract IViewModelResolver ProvideViewModelResolver();
+        public abstract IViewResolver ProvideViewModelResolver();
     }
 }

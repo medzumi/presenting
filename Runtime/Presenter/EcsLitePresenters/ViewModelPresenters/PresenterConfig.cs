@@ -6,21 +6,15 @@ using Utilities.SerializeReferencing;
 namespace Game.CoreLogic
 {
     [Serializable]
-    public class PresenterConfig : IEcsPresenterConfig
+    public class PresenterConfig
     {
         [SerializeField] private string _key;
 
-        [SerializeReference] [SerializeTypes(typeof(IEcsPresenter))]
-        private IEcsPresenter _presenter;
+        [SerializeReference] [SerializeTypes(typeof(IEcsPresenter<,>))] private object _presenter = null;
 
         public string GetKey()
         {
             return _key;
-        }
-
-        public IEcsPresenter GetPresenter()
-        {
-            return _presenter;
         }
     }
 }

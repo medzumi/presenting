@@ -5,10 +5,9 @@ using ViewModel;
 namespace Game.CoreLogic
 {
     [Serializable]
-    public struct EcsPresenterData
+    public class EcsPresenterData
     {
         public EcsWorld ModelWorld;
         public int ModelEntity;
-        public IViewModel ViewModel;
     }
 }
