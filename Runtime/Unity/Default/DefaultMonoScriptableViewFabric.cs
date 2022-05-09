@@ -50,6 +50,7 @@ namespace unityPresenting.Unity.Default
                     }
                 });
 
+                _pools[key] = pool;
                 prebakePoolDisposeHandler.pool = pool;
             }
 
@@ -85,7 +86,7 @@ namespace unityPresenting.Unity.Default
             }
         }
 
-        public override List<ViewData> ReadPresenterData(List<ViewData> presenterData)
+        public override List<ViewData> ReadData(List<ViewData> presenterData)
         {
             if (presenterData.IsNull())
             {
@@ -106,7 +107,7 @@ namespace unityPresenting.Unity.Default
     }
     
     
-    [CreateAssetMenu(menuName = "unityPresenting/Default/DefaultMonoScriptableViewFabric")]
+    [CreateAssetMenu(menuName = "presenting/Default/DefaultMonoScriptableViewFabric")]
     public class DefaultMonoScriptableViewFabric : DefaultMonoScriptableViewFabric<MonoBehaviour>
     {
         

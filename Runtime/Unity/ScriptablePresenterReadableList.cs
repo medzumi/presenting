@@ -6,6 +6,6 @@ namespace unityPresenting.Unity
 {
     public abstract class ScriptablePresenterReadableList : ScriptableObject, IReadableList<PresenterData>
     {
-        public abstract List<PresenterData> ReadPresenterData(List<PresenterData> presenterData);
+        public abstract List<PresenterData> ReadData(List<PresenterData> presenterData);
     }
 }

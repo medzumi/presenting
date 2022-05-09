@@ -25,7 +25,7 @@ namespace Unity.Editor
                 var genericMenu = new GenericMenu();
                 _buffer.Clear();
                 var attr = attribute as ViewKeyProperty;
-                foreach (var variable in PresenterSettings.instance.ViewResolver.ReadPresenterData(_buffer))
+                foreach (var variable in PresenterSettings.instance.ViewResolver.ReadData(_buffer))
                 {
                     if (attr.ViewType.IsAssignableFrom(variable.view.GetType()))
                     {
@@ -67,7 +67,7 @@ namespace Unity.Editor
                     property.stringValue = "Null";
                     property.serializedObject.ApplyModifiedProperties();
                 });
-                foreach (var variable in PresenterSettings.instance.PresenterResolver.ReadPresenterData(_buffer))
+                foreach (var variable in PresenterSettings.instance.PresenterResolver.ReadData(_buffer))
                 {
                     if (modelType.IsAssignableFrom(variable.Presenter.GetModelType()) && viewType.IsAssignableFrom(variable.Presenter.GetViewType()))
                     {

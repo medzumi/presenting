@@ -7,6 +7,6 @@ namespace unityPresenting.Unity
     {
         public abstract IPresenterResolver ProvidePresenterResolver();
 
-        public abstract IViewResolver ProvideViewModelResolver();
+        public abstract IViewResolver ProvideViewResolver();
     }
 }

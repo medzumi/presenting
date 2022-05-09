@@ -6,12 +6,12 @@ using Utilities.CodeExtensions;
 
 namespace unityPresenting.Unity.Default
 {
-    [CreateAssetMenu(menuName = "unityPresenting/Default/DefaultPresenterConfig")]
+    [CreateAssetMenu(menuName = "presenting/Default/DefaultPresenterConfig")]
     [Serializable]
     public class DefaultPresenterConfig : ScriptablePresenterReadableList
     {
         [SerializeField] private List<PresenterConfig> _presenter;
-        public override List<PresenterData> ReadPresenterData(List<PresenterData> presenterData)
+        public override List<PresenterData> ReadData(List<PresenterData> presenterData)
         {
             if (presenterData.IsNull())
             {

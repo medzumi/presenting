@@ -11,7 +11,7 @@ namespace unityPresenting.Test
             throw new NotImplementedException();
         }
 
-        public List<ViewData> ReadPresenterData(List<ViewData> presenterData)
+        public List<ViewData> ReadData(List<ViewData> presenterData)
         {
             throw new NotImplementedException();
         }

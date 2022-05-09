@@ -4,6 +4,6 @@ namespace unityPresenting.Core
 {
     public interface IReadableList<TReadableType>
     {
-        List<TReadableType> ReadPresenterData(List<TReadableType> presenterData);
+        List<TReadableType> ReadData(List<TReadableType> presenterData);
     }
 }

@@ -10,7 +10,7 @@ namespace unityPresenting.Unity
         public abstract Type GetFabricType();
 
         public abstract object Create(string key);
-        public abstract List<ViewData> ReadPresenterData(List<ViewData> presenterData);
+        public abstract List<ViewData> ReadData(List<ViewData> presenterData);
     }
 
     public abstract class ScriptableViewFabric<TView> : ScriptableViewFabric
