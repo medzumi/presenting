@@ -1,7 +1,7 @@
-﻿using Game.CoreLogic;
-using UnityEngine;
+﻿using UnityEngine;
+using unityPresenting.Core;
 
-namespace Unity
+namespace unityPresenting.Unity
 {
     public abstract class AbstractResolverProvider : ScriptableObject
     {

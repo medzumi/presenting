@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Unity
+namespace unityPresenting.Unity
 {
     public class ViewKeyProperty : PropertyAttribute
     {
@@ -9,22 +9,6 @@ namespace Unity
 
         public ViewKeyProperty(Type viewType)
         {
-            ViewType = viewType;
-        }
-    }
-
-    public class ViewDataKeyProperty : PropertyAttribute
-    {
-    }
-
-    public class PresenterKeyProperty : PropertyAttribute
-    {
-        public readonly Type ModelType;
-        public readonly Type ViewType;
-
-        public PresenterKeyProperty(Type modelType, Type viewType)
-        {
-            ModelType = modelType;
             ViewType = viewType;
         }
     }

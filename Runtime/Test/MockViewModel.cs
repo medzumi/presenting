@@ -2,7 +2,7 @@
 using UnityEngine;
 using ViewModel;
 
-namespace Editor
+namespace unityPresenting.Test
 {
     public class MockViewModel : IViewModel
     {
@@ -27,9 +27,9 @@ namespace Editor
             return Activator.CreateInstance<T>();
         }
 
-        public T AddTo<T>(T disposable) where T : IDisposable
+        public T Subscribe<T>(T disposable) where T : IDisposable
         {
-            _originViewModel.AddTo(disposable);
+            _originViewModel.Subscribe(disposable);
             return disposable;
         }
 

@@ -1,10 +1,10 @@
-﻿using Game.CoreLogic;
-using Packages.Utilities.Unity.Runtime.ScriptableSingletone;
-//using Packages.Utilities.Unity.Runtime.ScriptableSingletone;
-using UnityEngine;
-using Utilities.GenericPatterns;
+﻿using UnityEngine;
+using unityPresenting.Core;
+using Utilities.Unity.ScriptableSingletone;
 
-namespace Unity
+//using Packages.Utilities.Unity.Runtime.ScriptableSingletone;
+
+namespace unityPresenting.Unity
 {
     public class PresenterSettings : RuntimeScriptableSingletone<PresenterSettings>
     {
