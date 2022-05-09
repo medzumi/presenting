@@ -39,6 +39,7 @@ namespace unityPresenting.Unity.Default
                     {
                         var poolDisposeHandler = prebakePoolDisposeHandler.Clone();
                         poolDisposeHandler.view = view;
+                        disposeHandler.Reset();
                         disposeHandler.Subscribe(poolDisposeHandler);
                     }
                 }, view =>
@@ -46,7 +47,10 @@ namespace unityPresenting.Unity.Default
                     if (view)
                     {
                         view.gameObject.SetActive(false);
-                        view.transform.SetParent(root);
+                        if (root)
+                        {
+                            view.transform.SetParent(root);
+                        }
                     }
                 });
 
@@ -75,6 +79,9 @@ namespace unityPresenting.Unity.Default
                 {
                     pool.Release(view);
                 }
+
+                view = null;
+                pool = null;
             }
 
             public PoolDisposeHandler Clone()
