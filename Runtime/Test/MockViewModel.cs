@@ -53,5 +53,15 @@ namespace unityPresenting.Test
         {
             _originViewModel?.Dispose();
         }
+
+        public void Reset()
+        {
+            
+        }
+
+        public void Subscribe(IDisposable disposable)
+        {
+            
+        }
     }
 }

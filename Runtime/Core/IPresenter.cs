@@ -4,7 +4,7 @@ using Utilities;
 
 namespace unityPresenting.Core
 {
-    public interface IPresenter
+    public interface IPresenter : IDisposable
     {
         Type GetModelType();
         Type GetViewType();
@@ -12,7 +12,7 @@ namespace unityPresenting.Core
         void Initialize(object model, object view);
     }
     
-    public interface IPresenter<in TModel, in TView> : IDisposable, IPresenter, IClonable<IPresenter<TModel, TView>>
+    public interface IPresenter<in TModel, in TView> : IPresenter, IClonable<IPresenter<TModel, TView>>
     {
         public void Initialize(TModel ecsPresenterData, TView tView);
     }
