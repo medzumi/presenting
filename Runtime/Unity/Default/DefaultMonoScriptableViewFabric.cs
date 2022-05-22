@@ -44,12 +44,15 @@ namespace unityPresenting.Unity.Default
                     }
                 }, view =>
                 {
-                    if (view)
+                    if (Application.isPlaying)
                     {
-                        view.gameObject.SetActive(false);
-                        if (root)
+                        if (view)
                         {
-                            view.transform.SetParent(root);
+                            if (root)
+                            {
+                                view.transform.SetParent(root);
+                            }
+                            view.gameObject.SetActive(false);
                         }
                     }
                 });

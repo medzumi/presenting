@@ -11,12 +11,12 @@ namespace unityPresenting.Unity
 
         public override void Inject(object obj, string key)
         {
-            if (obj is IInjectResolver<IPresenterResolver> injectResolver)
+            if (obj is IInject<IPresenterResolver> injectResolver)
             {
                 injectResolver.Inject(_abstractResolverProvider.ProvidePresenterResolver());
             }
 
-            if (obj is IInjectResolver<IViewResolver> injectViewResolver)
+            if (obj is IInject<IViewResolver> injectViewResolver)
             {
                 injectViewResolver.Inject(_abstractResolverProvider.ProvideViewResolver());
             }
@@ -24,12 +24,12 @@ namespace unityPresenting.Unity
 
         public override void Inject<TObject>(TObject obj, string key)
         {
-            if (obj is IInjectResolver<IPresenterResolver> injectResolver)
+            if (obj is IInject<IPresenterResolver> injectResolver)
             {
                 injectResolver.Inject(_abstractResolverProvider.ProvidePresenterResolver());
             }
 
-            if (obj is IInjectResolver<IViewResolver> injectViewResolver)
+            if (obj is IInject<IViewResolver> injectViewResolver)
             {
                 injectViewResolver.Inject(_abstractResolverProvider.ProvideViewResolver());
             }
