@@ -34,7 +34,7 @@ namespace unityPresenting.Unity.Default
                                 var arguments = type.GetGenericArguments();
                                 presenterData.Add(new PresenterData()
                                 {
-                                    Key = presenterConfig.GetKey(),
+                                    Key = presenterConfig.Key,
                                     Presenter = presenter
                                 });
                             }

@@ -2,7 +2,7 @@ namespace unityPresenting.Core
 {
     public struct PresenterData
     {
-        public string Key;
+        public Key Key;
         public IPresenter Presenter;
     }
 }

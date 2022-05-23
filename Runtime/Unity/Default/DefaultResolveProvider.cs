@@ -36,12 +36,12 @@ namespace unityPresenting.Unity.Default
                     _presenterDataBuffer.Clear();
                     foreach (var presenterData in scriptablePresenterCollection.ReadData(_presenterDataBuffer))
                     {
-                        if (string.Equals(presenterData.Key, key))
+                        if (string.Equals(presenterData.Key.KeyValue, key))
                         {
                             var concretePresenter = ((IPresenter<TModel,TView>)presenterData.Presenter).Clone();
                             foreach (var injector in _injectors)
                             {
-                                injector.Inject(concretePresenter, key);
+                                injector.Inject(concretePresenter, presenterData.Key.Name);
                             }
                             _presenters[key] = presenter = concretePresenter;
                             break;

@@ -8,14 +8,11 @@ namespace unityPresenting.Unity
     [Serializable]
     public class PresenterConfig
     {
-        [SerializeField] private string _key;
+        [SerializeField] private Key _key;
 
         [SerializeReference] [SerializeTypes(typeof(IPresenter))] private IPresenter _presenter = null;
 
-        public string GetKey()
-        {
-            return _key;
-        }
+        public Key Key => _key;
 
         public IPresenter GetPresenter()
         {
