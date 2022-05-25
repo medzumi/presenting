@@ -1,6 +1,6 @@
 ﻿namespace unityPresenting.Core
 {
-    public interface IPresenterResolver : IReadableList<PresenterData>
+    public interface IPresenterResolver
     {
         public IPresenter<TModel, TView> Resolve<TModel, TView>(string key);
     }

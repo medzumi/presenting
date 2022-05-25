@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using unityPresenting.Core;
 using unityPresenting.Unity;
+using Utilities.Unity.Extensions;
 
 namespace Unity.Editor
 {
@@ -46,8 +47,8 @@ namespace Unity.Editor
     [CustomPropertyDrawer(typeof(PresenterKeyProperty))]
     public class PresenterKeyPropertyDrawer : PropertyDrawer
     {
-        private static List<PresenterData> _buffer = new List<PresenterData>();
-        private readonly Dictionary<string, Key> _keys = new Dictionary<string, Key>();
+        private static List<PresenterSource> _buffer = new List<PresenterSource>();
+        private readonly Dictionary<string, AbstractPresentersContainer> _keys = new Dictionary<string, AbstractPresentersContainer>();
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -56,29 +57,27 @@ namespace Unity.Editor
                 throw new UnityException($"Not valid property type : {property.propertyType}. Required : {SerializedPropertyType.String}");
             }
 
-            if (!_keys.TryGetValue(property.stringValue, out var key))
+            if (!_keys.TryGetValue(property.stringValue, out var source))
             {
                 _buffer.Clear();
-                PresenterSettings.instance.PresenterResolver.ReadData(_buffer);
-                key = _buffer.FirstOrDefault(data => string.Equals(data.Key.KeyValue, property.stringValue)).Key;
-                if (key == null)
-                {
-                    key = new Key()
-                    {
-                        Name = $"Missing ({property.stringValue})",
-                        KeyValue = property.stringValue
-                    };
-                }
+                PresenterSettings.instance.PresentersContainer.ReadPresenterRegistrators(_buffer);
+                source = _buffer.FirstOrDefault(data => string.Equals(data.Key, property.stringValue)).Source;
 
-                _keys[property.stringValue] = key;
+                _keys[property.stringValue] = source;
             }
 
             var attr = attribute as PresenterKeyProperty;
             var modelType = attr.ModelType;
             var viewType = attr.ViewType;
-
-            var content = new GUIContent(key.Name);
+            
+            var content = new GUIContent(source?.GetPresenterNameByKey(property.stringValue));
             var otherRect = EditorGUI.PrefixLabel(position, label);
+            var objectRect = new Rect(otherRect.position, otherRect.size - new Vector2(50, 0));
+            otherRect = new Rect(otherRect.position + new Vector2(objectRect.size.x, 0),
+                new Vector2(50, otherRect.size.y));
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUI.ObjectField(objectRect, source, typeof(AbstractPresentersContainer));
+            EditorGUI.EndDisabledGroup();
             if (EditorGUI.DropdownButton(otherRect, content, FocusType.Keyboard))
             {
                 var genericMenu = new GenericMenu();
@@ -88,14 +87,16 @@ namespace Unity.Editor
                     property.stringValue = String.Empty;
                     property.serializedObject.ApplyModifiedProperties();
                 });
-                foreach (var variable in PresenterSettings.instance.PresenterResolver.ReadData(_buffer))
+                foreach (var variable in PresenterSettings.instance.PresentersContainer.ReadPresenterRegistrators(_buffer))
                 {
-                    if (modelType.IsAssignableFrom(variable.Presenter.GetModelType()) && viewType.IsAssignableFrom(variable.Presenter.GetViewType()))
+                    var presenter = variable.Source.GetPresenterByKey(variable.Key);
+                    if (presenter.IsNotNullInUnity() && variable.Source && modelType.IsAssignableFrom(presenter.GetModelType()) 
+                        && viewType.IsAssignableFrom(presenter.GetViewType()))
                     {
-                        genericMenu.AddItem(new GUIContent(variable.Key.Name), false, () =>
+                        genericMenu.AddItem(new GUIContent(variable.Source.GetPresenterNameByKey(variable.Key)), false, () =>
                         {
-                            property.stringValue = variable.Key.KeyValue;
-                            _keys[variable.Key.KeyValue] = variable.Key;
+                            property.stringValue = variable.Key;
+                            _keys[variable.Key] = variable.Source;
                             property.serializedObject.ApplyModifiedProperties();
                         });
                     }

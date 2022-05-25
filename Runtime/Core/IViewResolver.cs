@@ -4,10 +4,4 @@
     {
         public TView Resolve<TView>(string key);
     }
-
-    public struct ViewData
-    {
-        public object view;
-        public string Key;
-    }
 }

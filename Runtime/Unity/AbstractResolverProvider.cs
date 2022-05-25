@@ -8,5 +8,7 @@ namespace unityPresenting.Unity
         public abstract IPresenterResolver ProvidePresenterResolver();
 
         public abstract IViewResolver ProvideViewResolver();
+
+        public abstract IPresentersContainer ProvideContainerPresenterRegistrator();
     }
 }

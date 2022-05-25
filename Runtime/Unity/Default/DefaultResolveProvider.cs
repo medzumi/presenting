@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 using unityPresenting.Core;
+using Utilities;
+using Utilities.Pooling;
 
 namespace unityPresenting.Unity.Default
 {
     [CreateAssetMenu(menuName = "presenting/Default/DefaultResolveProvider")]
     public class DefaultResolveProvider : AbstractResolverProvider, IPresenterResolver, IViewResolver
     {
-        [SerializeField] private List<ScriptablePresenterReadableList> _presenterCollections;
+        [SerializeField] private AbstractPresentersContainer abstractPresentersContainer;
         [FormerlySerializedAs("_injector")] [SerializeField] private List<AbstractInjector> _injectors;
         [SerializeField] private List<ScriptableViewFabric> _scriptableViewFabrics = new List<ScriptableViewFabric>();
 
@@ -27,31 +30,36 @@ namespace unityPresenting.Unity.Default
             return this;
         }
 
+        public override IPresentersContainer ProvideContainerPresenterRegistrator()
+        {
+            return abstractPresentersContainer;
+        }
+
         public IPresenter<TModel, TView> Resolve<TModel, TView>(string key)
         {
             if (!_presenters.TryGetValue(key, out var presenter))
             {
-                foreach (var scriptablePresenterCollection in _presenterCollections)
+                presenter = abstractPresentersContainer.GetPresenterByKey(key);
+                presenter = presenter.Clone();
+                foreach (var abstractInjector in _injectors)
                 {
-                    _presenterDataBuffer.Clear();
-                    foreach (var presenterData in scriptablePresenterCollection.ReadData(_presenterDataBuffer))
-                    {
-                        if (string.Equals(presenterData.Key.KeyValue, key))
-                        {
-                            var concretePresenter = ((IPresenter<TModel,TView>)presenterData.Presenter).Clone();
-                            foreach (var injector in _injectors)
-                            {
-                                injector.Inject(concretePresenter, presenterData.Key.Name);
-                            }
-                            _presenters[key] = presenter = concretePresenter;
-                            break;
-                        }
-                    }
+                    abstractInjector.Inject(presenter, key);
+                }
+                if (presenter is IPresenter<TModel, TView> genericPresenter)
+                {
+                    _presenters[key] = genericPresenter;
+                }
+                else
+                {
+                    var resolve = GenericPresenterResolver<TModel, TView>.Create();
+                    resolve._noneGenericPresenter = presenter;
+                    presenter = _presenters[key] = resolve;
                 }
             }
 
-            return ((IPresenter<TModel, TView>)presenter).Clone();
+            return (presenter.Clone()) as IPresenter<TModel, TView>;
         }
+
 
         public TView Resolve<TView>(string key)
         {
@@ -71,16 +79,6 @@ namespace unityPresenting.Unity.Default
             return default;
         }
 
-        public List<PresenterData> ReadData(List<PresenterData> presenterData)
-        {
-            foreach (var scriptablePresenterCollection in _presenterCollections)
-            {
-                presenterData = scriptablePresenterCollection.ReadData(presenterData);
-            }
-
-            return presenterData;
-        }
-
         public List<ViewData> ReadData(List<ViewData> presenterData)
         {
             foreach (var scriptableViewFabric in _scriptableViewFabrics)
@@ -89,6 +87,52 @@ namespace unityPresenting.Unity.Default
             }
 
             return presenterData;
+        }
+        
+        private class GenericPresenterResolver<TModel, TView> : PoolableObject<GenericPresenterResolver<TModel, TView>>, IPresenter<TModel, TView>
+        {
+            public IPresenter _noneGenericPresenter;
+                        
+            public void Initialize(TModel ecsPresenterData, TView tView)
+            {
+                _noneGenericPresenter.Initialize(ecsPresenterData, tView);
+            }
+
+            IPresenter IClonable<IPresenter>.Clone()
+            {
+                var clone = Create();
+                clone._noneGenericPresenter = _noneGenericPresenter.Clone();
+                return clone;
+            }
+
+            public Type GetModelType()
+            {
+                return _noneGenericPresenter.GetModelType();
+            }
+
+            public Type GetViewType()
+            {
+                return _noneGenericPresenter.GetViewType();
+            }
+
+            public void Initialize(object model, object view)
+            {
+                _noneGenericPresenter.Initialize(model, view);
+            }
+
+            IPresenter<TModel, TView> IClonable<IPresenter<TModel, TView>>.Clone()
+            {
+                var clone = Create();
+                clone._noneGenericPresenter = _noneGenericPresenter.Clone();
+                return clone;
+            }
+
+            protected override void DisposeHandler()
+            {
+                _noneGenericPresenter.Dispose();
+                _noneGenericPresenter = null;
+                base.DisposeHandler();
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ using Utilities;
 
 namespace unityPresenting.Core
 {
-    public interface IPresenter : IDisposable
+    public interface IPresenter : IDisposable, IClonable<IPresenter>
     {
         Type GetModelType();
         Type GetViewType();

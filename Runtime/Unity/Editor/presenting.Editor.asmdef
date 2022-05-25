@@ -3,7 +3,8 @@
     "rootNamespace": "presenting.Unity.Editor",
     "references": [
         "GUID:d32586461bcb8b647813d220dc39f273",
-        "GUID:31f661456bb7ba54bac6d58dcaa9ad6d"
+        "GUID:31f661456bb7ba54bac6d58dcaa9ad6d",
+        "GUID:3e1056c770db61849b9836e111b63ca9"
     ],
     "includePlatforms": [
         "Editor"
