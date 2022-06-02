@@ -28,7 +28,7 @@ namespace Unity.Editor
                 var genericMenu = new GenericMenu();
                 _buffer.Clear();
                 var attr = attribute as ViewKeyProperty;
-                foreach (var variable in PresenterSettings.instance.ViewResolver.ReadData(_buffer))
+                /*foreach (var variable in PresenterSettings.instance.ViewResolver.ReadData(_buffer))
                 {
                     if (attr.ViewType.IsAssignableFrom(variable.view.GetType()))
                     {
@@ -38,7 +38,7 @@ namespace Unity.Editor
                             property.serializedObject.ApplyModifiedProperties();
                         });
                     }
-                }
+                }*/
                 genericMenu.DropDown(position);
             }
         }
@@ -60,7 +60,7 @@ namespace Unity.Editor
             if (!_keys.TryGetValue(property.stringValue, out var source))
             {
                 _buffer.Clear();
-                PresenterSettings.instance.PresentersContainer.ReadPresenterRegistrators(_buffer);
+              //  PresenterSettings.instance.PresentersContainer.ReadPresenterRegistrators(_buffer);
                 source = _buffer.FirstOrDefault(data => string.Equals(data.Key, property.stringValue)).Source;
 
                 _keys[property.stringValue] = source;
@@ -87,7 +87,7 @@ namespace Unity.Editor
                     property.stringValue = String.Empty;
                     property.serializedObject.ApplyModifiedProperties();
                 });
-                foreach (var variable in PresenterSettings.instance.PresentersContainer.ReadPresenterRegistrators(_buffer))
+             /*   foreach (var variable in PresenterSettings.instance.PresentersContainer.ReadPresenterRegistrators(_buffer))
                 {
                     var presenter = variable.Source.GetPresenterByKey(variable.Key);
                     if (presenter.IsNotNullInUnity() && variable.Source && modelType.IsAssignableFrom(presenter.GetModelType()) 
@@ -100,7 +100,7 @@ namespace Unity.Editor
                             property.serializedObject.ApplyModifiedProperties();
                         });
                     }
-                }
+                }*/
                 genericMenu.DropDown(position);
             }
         }

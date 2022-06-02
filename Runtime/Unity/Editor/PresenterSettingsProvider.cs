@@ -20,12 +20,18 @@ namespace Unity.Editor
 
             public PresentSettingsProvider(string path, SettingsScope scopes, IEnumerable<string> keywords = null) : base(path, scopes, keywords)
             {
-                _editor = UnityEditor.Editor.CreateEditor(PresenterSettings.instance);
+                InitializeEditor();
+            }
+
+            private async void InitializeEditor()
+            {
+                _editor = UnityEditor.Editor.CreateEditor(await PresenterSettings.GetInstanceAsync());
             }
 
             public override void OnGUI(string searchContext)
             {
-                _editor.OnInspectorGUI();
+                if(_editor)
+                    _editor.OnInspectorGUI();
             }
         }
     }
